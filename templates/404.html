@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="keywords" content="文件共享系统">
+    <meta name="description" content="文件共享，文件传输，文件存储">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta content="no-cache">
+    <meta name="robots" content="index">
+    <title>404</title>
+    <link rel="shortcut icon" href="/static/assets/favicon.ico">
+    <style>
+        .container {
+            display: block;
+            margin: 24px auto;
+            width: 400px;
+            height: 400px;
+        }
+
+        .content1 {
+            color: rgba(0, 0, 0, .85);
+            font-size: 24px;
+            line-height: 1.8;
+            text-align: center;
+            margin-top: 24px;
+        }
+
+        .content2 {
+            color: rgba(0, 0, 0, .45);
+            font-size: 14px;
+            line-height: 1.6;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <img src="/static/assets/404.svg" alt="404">
+    <div class="content1">{{.status}}</div>
+    <div class="content2">{{.msg}}</div>
+</div>
+</body>
+</html>

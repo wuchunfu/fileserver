@@ -1,0 +1,15 @@
+# system configuration
+system:
+  # service listening address
+  addr: :9090
+  # file storage path
+  storage-path: ./files
+
+# logger configuration
+log:
+  # file path
+  path: ./logs
+  # file name
+  name: fileserver.log
+  # log level
+  level: INFO
