@@ -45,12 +45,12 @@ func InitRouter() *gin.Engine {
 	router.Use(cors.Cors())
 	router.GET("/ping", api.PingHandler)
 	if mode := gin.Mode(); mode == gin.TestMode {
-		router.LoadHTMLGlob("./../templates/*")
+		router.LoadHTMLGlob("./../web/templates/*")
 	} else {
-		router.LoadHTMLGlob("templates/*")
+		router.LoadHTMLGlob("./web/templates/*")
 	}
 	router.GET("/", api.IndexHandler)
-	router.Static("/static", "./static")
+	router.Static("/static", "./web/static")
 	router.Static("/files", common.StoragePath)
 	router.GET("/list", api.List)
 	router.POST("/upload", api.Upload)
