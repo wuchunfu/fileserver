@@ -6,7 +6,7 @@
     <meta name="description" content="文件共享，文件传输，文件存储">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-    <meta http-equiv="cache-control" content="no-cache">
+    <meta content="no-cache">
     <meta name="robots" content="index">
     <title>{{.title}}</title>
     <link rel="shortcut icon" href="/web/static/assets/favicon.ico">
@@ -166,6 +166,7 @@
                             _this.uploadPercent = 0;
                             _this.dialogVisible = false;
                             _this.disabled = true;
+                            _this.fileList = [];
                         }, 2000)
                     }
                     _this.getTableData();
