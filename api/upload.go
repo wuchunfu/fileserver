@@ -3,7 +3,6 @@ package api
 import (
 	"fileserver/common"
 	"fileserver/utils"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"net/http"
@@ -24,7 +23,6 @@ func Upload(ctx *gin.Context) {
 		defer os.Chdir(currentDirectoryAbs)
 		// 获取所有上传文件信息
 		files := form.File["formDataFile"]
-		fmt.Println(files)
 		// 循环对每个文件进行处理
 		for _, file := range files {
 			fileName := file.Filename

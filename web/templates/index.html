@@ -197,10 +197,11 @@
                         window.navigator.msSaveBlob(blob, decodeURI(fileName));
                     } else {
                         // 在拿到数据流之后,把流转为指定文件格式并创建a标签,模拟点击下载,实现文件下载功能
-                        // 通过 FileReader 接受并解析
+                        // 通过 FileReader 接受并解析, 读取文件
                         let reader = new FileReader();
                         reader.readAsDataURL(blob);
-                        reader.onload = (e) => {
+                        // 加载监听
+                        reader.onloadend = (e) => {
                             let link = document.createElement('a');
                             link.style.display = 'none';
                             link.href = e.target.result;
@@ -213,6 +214,8 @@
                             link.click();
                             document.body.removeChild(link);
                         }
+                        // 把文件读取到内存 ArrayBuffer 中
+                        reader.readAsArrayBuffer(blob);
                     }
                 }).catch((res) => {
                     // console.log(res);

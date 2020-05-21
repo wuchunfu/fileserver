@@ -43,7 +43,7 @@ func main() {
 	if err != nil {
 		logrus.Errorf("Failed to get hostname!\n%s", err.Error())
 	}
-	fmt.Printf("Service listening address: %s%s\n", hostname, common.Addr)
+	fmt.Printf("Service listening address: http://%s%s\n", hostname, common.Addr)
 	// 优雅地重启或停止
 	// 等待中断信号以优雅地关闭服务器（设置 5 秒的超时时间）
 	quit := make(chan os.Signal)
