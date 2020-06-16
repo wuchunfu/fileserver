@@ -167,7 +167,7 @@
                             _this.dialogVisible = false;
                             _this.disabled = true;
                             _this.fileList = [];
-                        }, 2000)
+                        }, 1000)
                     }
                     _this.getTableData();
                 }).catch((res) => {
@@ -199,6 +199,7 @@
                         // 在拿到数据流之后,把流转为指定文件格式并创建a标签,模拟点击下载,实现文件下载功能
                         // 通过 FileReader 接受并解析, 读取文件
                         let reader = new FileReader();
+                        // 把读取的Blob和File对象以data：URL的形式返回，它与readAsArrayBuffer方法相同
                         reader.readAsDataURL(blob);
                         // 加载监听
                         reader.onloadend = (e) => {
@@ -214,11 +215,9 @@
                             link.click();
                             document.body.removeChild(link);
                         }
-                        // 把文件读取到内存 ArrayBuffer 中
-                        reader.readAsArrayBuffer(blob);
                     }
                 }).catch((res) => {
-                    // console.log(res);
+                    console.log(res);
                     this.$message({
                         type: 'error',
                         message: '下载失败!'
@@ -241,7 +240,7 @@
                     });
                     _this.getTableData();
                 }).catch((res) => {
-                    // console.log(res);
+                    console.log(res);
                     this.$message({
                         type: 'error',
                         message: '删除失败!'
