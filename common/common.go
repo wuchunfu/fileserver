@@ -6,7 +6,7 @@ import "fileserver/config"
 var initConfig = config.InitConfig
 
 // 访问地址
-var Addr = initConfig.System.Addr
+var Port = initConfig.System.Port
 
 // 文件上传后的存储路径
 var StoragePath = initConfig.System.StoragePath

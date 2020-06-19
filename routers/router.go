@@ -5,7 +5,10 @@ import (
 	"fileserver/common"
 	"fileserver/middleware/cors"
 	"fileserver/middleware/logger"
+	"fileserver/utils"
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
 func InitRouter() *gin.Engine {
@@ -44,13 +47,14 @@ func InitRouter() *gin.Engine {
 	// 允许使用跨域请求  全局中间件
 	router.Use(cors.Cors())
 	router.GET("/ping", api.PingHandler)
-	if mode := gin.Mode(); mode == gin.TestMode {
-		router.LoadHTMLGlob("./../web/templates/*")
-	} else {
-		router.LoadHTMLGlob("./web/templates/*")
-	}
 	router.GET("/", api.IndexHandler)
-	router.Static("/static", "./web/static")
+	installPath, ok := utils.CheckFsHome()
+	if ok {
+		router.LoadHTMLGlob(fmt.Sprintf("%s%s", installPath, "/web/templates/*"))
+		router.Static("/static", fmt.Sprintf("%s%s", installPath, "/web/static"))
+	} else {
+		logrus.Warn("Page not found!")
+	}
 	router.Static("/files", common.StoragePath)
 	router.GET("/list", api.List)
 	router.POST("/upload", api.Upload)

@@ -4,6 +4,8 @@ import (
 	"context"
 	"fileserver/common"
 	"fileserver/routers"
+	"fileserver/utils"
+	"fileserver/utils/iputil"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -15,6 +17,18 @@ import (
 )
 
 func main() {
+	utils.CheckFsHome()
+	storagePath := utils.IsAbsolutePath(common.StoragePath)
+	if !storagePath {
+		logrus.Warn("Please set the storage path to absolute path!")
+		os.Exit(-1)
+	}
+	logPath := utils.IsAbsolutePath(common.LogPath)
+	if !logPath {
+		logrus.Warn("Please set the log path to absolute path!")
+		os.Exit(-1)
+	}
+
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	// 设置运行模式
@@ -23,10 +37,11 @@ func main() {
 	// 初始化路由
 	router := routers.InitRouter()
 
+	addr := fmt.Sprintf("%s%s", ":", common.Port)
 	// 启动服务
 	// 定义服务器
 	httpServer := &http.Server{
-		Addr:           common.Addr,
+		Addr:           addr,
 		Handler:        router,
 		ReadTimeout:    3600 * time.Second,
 		WriteTimeout:   3600 * time.Second,
@@ -39,11 +54,14 @@ func main() {
 			logrus.Fatalf("listen: %s\n", err)
 		}
 	}()
-	hostname, err := os.Hostname()
-	if err != nil {
-		logrus.Errorf("Failed to get hostname!\n%s", err.Error())
+
+	fmt.Printf("Local access address: http://127.0.0.1%s\n", addr)
+	ips := iputil.GetIntranetIp()
+	for _, ipStr := range ips {
+		if ipStr != "" {
+			fmt.Printf("Network access address: http://%s%s\n", ipStr, addr)
+		}
 	}
-	fmt.Printf("Service listening address: http://%s%s\n", hostname, common.Addr)
 	// 优雅地重启或停止
 	// 等待中断信号以优雅地关闭服务器（设置 5 秒的超时时间）
 	quit := make(chan os.Signal)

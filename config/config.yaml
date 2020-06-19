@@ -1,14 +1,14 @@
 # system configuration
 system:
   # service listening address
-  addr: :9090
+  port: 9090
   # file storage path
-  storage-path: ./files
+  storage-path: /tmp/fileserver/files
 
 # logger configuration
 log:
   # file path
-  path: ./logs
+  path: /tmp/fileserver/logs
   # file name
   name: fileserver.log
   # log level

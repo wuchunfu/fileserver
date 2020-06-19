@@ -7,16 +7,21 @@ import (
 	"github.com/sirupsen/logrus"
 	"os"
 	"path"
+	"path/filepath"
 	"strings"
 	"time"
 )
 
 // 日志记录到文件
 func WriteLogToFile() gin.HandlerFunc {
-	// 如果文件夹不存在就创建
-	utils.MkdirAll(common.LogPath)
+	logPathAbs, _ := filepath.Abs(common.LogPath)
+	isExistPath := utils.IsExistPath(logPathAbs)
+	if !isExistPath {
+		// 如果文件夹不存在就创建
+		utils.MkdirAll(logPathAbs)
+	}
 	// 日志文件
-	fullPath := path.Join(common.LogPath, common.LogName)
+	fullPath := path.Join(logPathAbs, common.LogName)
 	// 写入文件
 	filePath, err := os.OpenFile(fullPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 	if err != nil {

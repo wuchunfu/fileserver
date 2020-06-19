@@ -40,7 +40,7 @@ type Server struct {
 }
 
 type System struct {
-	Addr        string `mapstructure:"addr" json:"addr" yaml:"addr"`
+	Port        string `mapstructure:"port" json:"port" yaml:"port"`
 	StoragePath string `mapstructure:"storage-path" json:"storagePath" yaml:"storage-path"`
 }
 
