@@ -51,7 +51,6 @@ http://127.0.0.1:9090
 
 ## 计划任务
 
-- [ ] 
 - [ ] 支持多平台构建并运行
 - [ ] 添加构建脚本以及运行脚本
 - [ ] 支持 Docker 运行
@@ -80,12 +79,6 @@ http://127.0.0.1:9090
 ## 联系方式
 
 <img src="./docs/images/image-wechat.png" alt="image-wechat" width="200" height="200" />
-
-## 捐赠
-
-如果你觉得这个项目对你有帮助，你可以请作者喝饮料
-
-<img src="./docs/images/image-wechat-pay.png" alt="image-wechat-pay" width="200" height="200" /><img src="./docs/images/image-ali-pay.png" alt="image-ali-pay" width="200" height="200" />
 
 ## 商用注意事项
 
