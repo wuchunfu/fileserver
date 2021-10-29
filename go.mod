@@ -1,4 +1,4 @@
-module fileserver
+module github.com/wuchunfu/fileserver
 
 go 1.17
 

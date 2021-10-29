@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"fileserver/middleware/logx"
+	"github.com/wuchunfu/fileserver/middleware/logx"
 	"os"
 )
 

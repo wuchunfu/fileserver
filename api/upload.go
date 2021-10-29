@@ -1,11 +1,11 @@
 package api
 
 import (
-	"fileserver/middleware/configx"
-	"fileserver/middleware/logx"
-	"fileserver/utils"
-	"fileserver/utils/filex"
 	"github.com/gin-gonic/gin"
+	"github.com/wuchunfu/fileserver/middleware/configx"
+	"github.com/wuchunfu/fileserver/middleware/logx"
+	"github.com/wuchunfu/fileserver/utils"
+	"github.com/wuchunfu/fileserver/utils/filex"
 	"net/http"
 	"os"
 	"path/filepath"

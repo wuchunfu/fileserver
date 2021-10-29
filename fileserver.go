@@ -1,6 +1,6 @@
 package main
 
-import "fileserver/cmd"
+import "github.com/wuchunfu/fileserver/cmd"
 
 func main() {
 	cmd.Execute()

@@ -1,13 +1,13 @@
 package routers
 
 import (
-	"fileserver/api"
-	"fileserver/middleware/configx"
-	"fileserver/middleware/cors"
-	"fileserver/middleware/logx"
-	"fileserver/utils"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/wuchunfu/fileserver/api"
+	"github.com/wuchunfu/fileserver/middleware/configx"
+	"github.com/wuchunfu/fileserver/middleware/cors"
+	"github.com/wuchunfu/fileserver/middleware/logx"
+	"github.com/wuchunfu/fileserver/utils"
 )
 
 func InitRouter() *gin.Engine {

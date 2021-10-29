@@ -1,15 +1,15 @@
 package tests
 
 import (
-	"fileserver/utils"
 	"fmt"
+	"github.com/wuchunfu/fileserver/utils/filex"
 	"testing"
 )
 
 func TestIsAbsolutePath(t *testing.T) {
-	fmt.Println(utils.IsAbsolutePath("/a/b/c"))
-	fmt.Println(utils.IsAbsolutePath("C:\\Windows\\system"))
-	fmt.Println(utils.IsAbsolutePath("C://Windows//system"))
-	fmt.Println(utils.IsAbsolutePath("Windows\\system"))
-	fmt.Println(utils.IsAbsolutePath("a/b/c"))
+	fmt.Println(filex.IsAbsolutePath("/a/b/c"))
+	fmt.Println(filex.IsAbsolutePath("C:\\Windows\\system"))
+	fmt.Println(filex.IsAbsolutePath("C://Windows//system"))
+	fmt.Println(filex.IsAbsolutePath("Windows\\system"))
+	fmt.Println(filex.IsAbsolutePath("a/b/c"))
 }

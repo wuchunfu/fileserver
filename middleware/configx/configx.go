@@ -1,10 +1,10 @@
 package configx
 
 import (
-	"fileserver/utils/filex"
 	"fmt"
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
+	"github.com/wuchunfu/fileserver/utils/filex"
 	"go.uber.org/zap"
 	"os"
 )

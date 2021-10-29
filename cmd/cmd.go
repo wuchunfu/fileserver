@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"fileserver/cmd/config"
 	"fmt"
 	"github.com/spf13/cobra"
+	"github.com/wuchunfu/fileserver/cmd/config"
 	"os"
 )
 

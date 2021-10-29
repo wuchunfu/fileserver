@@ -2,13 +2,13 @@ package run
 
 import (
 	"context"
-	"fileserver/middleware/configx"
-	"fileserver/middleware/logx"
-	"fileserver/routers"
-	"fileserver/utils"
-	"fileserver/utils/iputil"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/wuchunfu/fileserver/middleware/configx"
+	"github.com/wuchunfu/fileserver/middleware/logx"
+	"github.com/wuchunfu/fileserver/routers"
+	"github.com/wuchunfu/fileserver/utils"
+	"github.com/wuchunfu/fileserver/utils/iputil"
 	"net/http"
 	"os"
 	"os/signal"

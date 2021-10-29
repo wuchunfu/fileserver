@@ -1,8 +1,8 @@
 package logx
 
 import (
-	"fileserver/middleware/configx"
 	"github.com/gin-gonic/gin"
+	"github.com/wuchunfu/fileserver/middleware/configx"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"

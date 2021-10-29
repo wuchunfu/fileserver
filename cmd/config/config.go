@@ -1,9 +1,9 @@
 package config
 
 import (
-	"fileserver/middleware/configx"
-	"fileserver/run"
 	"github.com/spf13/cobra"
+	"github.com/wuchunfu/fileserver/middleware/configx"
+	"github.com/wuchunfu/fileserver/run"
 )
 
 var StartCmd = &cobra.Command{
