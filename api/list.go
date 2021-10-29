@@ -1,7 +1,7 @@
 package api
 
 import (
-	"fileserver/common"
+	"fileserver/middleware/configx"
 	"fileserver/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -15,10 +15,13 @@ type FileList struct {
 	DateTime string `json:"dateTime"`
 }
 
-// 文件列表
+// List 文件列表
 func List(ctx *gin.Context) {
+	setting := configx.ServerSetting
+	storagePath := setting.System.StoragePath
+
 	fileList := make([]FileList, 0)
-	storageAbs, _ := filepath.Abs(common.StoragePath)
+	storageAbs, _ := filepath.Abs(storagePath)
 	// 遍历目录，读出文件名、大小
 	filepath.Walk(storageAbs, func(filePath string, fileInfo os.FileInfo, err error) error {
 		if nil == fileInfo {

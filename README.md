@@ -11,7 +11,7 @@
 - go
 - gin
 - viper
-- logrus
+- zap
 - vue
 - elementui
 - axios

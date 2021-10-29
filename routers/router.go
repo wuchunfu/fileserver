@@ -2,45 +2,20 @@ package routers
 
 import (
 	"fileserver/api"
-	"fileserver/common"
+	"fileserver/middleware/configx"
 	"fileserver/middleware/cors"
-	"fileserver/middleware/logger"
+	"fileserver/middleware/logx"
 	"fileserver/utils"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 )
 
 func InitRouter() *gin.Engine {
 	// 全局中间件
-	//// 日志文件
-	//fullPath := path.Join(common.LogPath, common.LogName)
-	//// 记录到文件。
-	//logFile, _ := os.Create(fullPath)
-	//// 自定义日志格式
-	//logConfig := gin.LoggerConfig{
-	//	Formatter: func(params gin.LogFormatterParams) string {
-	//		// 你的自定义格式
-	//		return fmt.Sprintf("%s - [%s] \"%s %s %s %d %s \"%s\" %s\"\n",
-	//			params.ClientIP,
-	//			params.TimeStamp.Format(time.RFC1123),
-	//			params.Method,
-	//			params.Path,
-	//			params.Request.Proto,
-	//			params.StatusCode,
-	//			params.Latency,
-	//			params.Request.UserAgent(),
-	//			params.ErrorMessage,
-	//		)
-	//	},
-	//	Output: logFile,
-	//}
-
 	// 路由设置
 	router := gin.New()
 
-	router.Use(logger.WriteLogToFile())
-	//router.Use(gin.LoggerWithConfig(logConfig))
+	router.Use(logx.ZapLogger(), logx.ZapRecovery(true))
 	// 设置 Recovery 中间件，主要用于拦截 panic 错误，不至于导致进程崩掉
 	router.Use(gin.Recovery())
 
@@ -53,9 +28,10 @@ func InitRouter() *gin.Engine {
 		router.LoadHTMLGlob(fmt.Sprintf("%s%s", installPath, "/web/templates/*"))
 		router.Static("/static", fmt.Sprintf("%s%s", installPath, "/web/static"))
 	} else {
-		logrus.Warn("Page not found!")
+		logx.GetLogger().Sugar().Warn("Page not found!")
 	}
-	router.Static("/files", common.StoragePath)
+	setting := configx.ServerSetting
+	router.Static("/files", setting.System.StoragePath)
 	router.GET("/list", api.List)
 	router.POST("/upload", api.Upload)
 	router.GET("/download/:fileName", api.Download)

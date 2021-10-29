@@ -1,25 +1,29 @@
 package api
 
 import (
-	"fileserver/common"
+	"fileserver/middleware/configx"
+	"fileserver/middleware/logx"
 	"fileserver/utils"
+	"fileserver/utils/filex"
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 	"net/http"
 	"os"
 	"path/filepath"
 )
 
-// 文件上传
+// Upload 文件上传
 func Upload(ctx *gin.Context) {
+	setting := configx.ServerSetting
+	storagePath := setting.System.StoragePath
+
 	installPath, ok := utils.CheckFsHome()
 	if ok {
-		storagePathAbs, _ := filepath.Abs(common.StoragePath)
+		storagePathAbs, _ := filepath.Abs(storagePath)
 		form, _ := ctx.MultipartForm()
 		if form != nil {
-			isExistPath := utils.IsExistPath(storagePathAbs)
+			isExistPath := filex.FilePathExists(storagePathAbs)
 			if !isExistPath {
-				utils.MkdirAll(storagePathAbs)
+				filex.MkdirAll(storagePathAbs)
 			}
 			// 进入存储目录
 			os.Chdir(storagePathAbs)
@@ -31,10 +35,10 @@ func Upload(ctx *gin.Context) {
 				fileSize := utils.FormatFileSize(file.Size)
 				err := ctx.SaveUploadedFile(file, fileName)
 				if err != nil {
-					logrus.Errorf("File upload failed!\n%s", err.Error())
+					logx.GetLogger().Sugar().Errorf("File upload failed!\n%s", err.Error())
 					panic(err.Error())
 				}
-				logrus.Infof("File uploaded successfully: fileName：%s fileSize: %s\n", fileName, fileSize)
+				logx.GetLogger().Sugar().Infof("File uploaded successfully: fileName：%s fileSize: %s\n", fileName, fileSize)
 			}
 			// 退出存储目录
 			defer os.Chdir(installPath)
