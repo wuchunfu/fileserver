@@ -7,11 +7,9 @@ import (
 	"strings"
 )
 
-// 处理跨域请求,支持options访问
+// Cors 处理跨域请求,支持options访问
 func Cors() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		// 请求方法
-		method := ctx.Request.Method
 		// 请求头部
 		origin := ctx.Request.Header.Get("Origin")
 		// 声明请求头keys
@@ -35,18 +33,23 @@ func Cors() gin.HandlerFunc {
 			// 允许跨域设置, 可以返回其他子段
 			// 跨域关键设置 让浏览器可以解析
 			ctx.Writer.Header().Set("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Cache-Control, Content-Language, Content-Type, Expires, Last-Modified, Pragma, FooBar")
-			// 缓存请求信息 单位为秒
-			ctx.Writer.Header().Set("Access-Control-Max-Age", "172800")
+			// 缓存请求信息 单位为秒 (一天)
+			ctx.Writer.Header().Set("Access-Control-Max-Age", "86400")
 			// 跨域请求是否需要带cookie信息 默认设置为true
-			ctx.Writer.Header().Set("Access-Control-Allow-Credentials", "false")
+			ctx.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 			// 设置返回格式是json
-			ctx.Writer.Header().Set("Content-Type", "application/json;charset=UTF-8")
+			ctx.Writer.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		}
+		// 请求方法
+		method := ctx.Request.Method
 		// 放行所有OPTIONS方法
-		if method == "OPTIONS" {
-			ctx.JSON(http.StatusOK, gin.H{"msg": "Options Request!"})
+		if method == http.MethodOptions {
+			//ctx.JSON(http.StatusOK, gin.H{"msg": "Options Request!"})
+			ctx.AbortWithStatus(http.StatusOK)
+			return
+		} else {
+			// 处理请求
+			ctx.Next()
 		}
-		// 处理请求
-		ctx.Next()
 	}
 }
