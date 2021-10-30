@@ -3,7 +3,8 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/wuchunfu/fileserver/middleware/configx"
-	"github.com/wuchunfu/fileserver/utils"
+	"github.com/wuchunfu/fileserver/utils/bytex"
+	"github.com/wuchunfu/fileserver/utils/datetimex"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -32,8 +33,8 @@ func List(ctx *gin.Context) {
 		}
 		list := &FileList{
 			FileName: fileInfo.Name(),
-			FileSize: utils.FormatFileSize(fileInfo.Size()),
-			DateTime: utils.FormatDateTime(fileInfo.ModTime()),
+			FileSize: bytex.FormatFileSize(fileInfo.Size()),
+			DateTime: datetimex.FormatDateTime(fileInfo.ModTime()),
 		}
 		fileList = append(fileList, *list)
 		return nil

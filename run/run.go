@@ -8,7 +8,7 @@ import (
 	"github.com/wuchunfu/fileserver/middleware/logx"
 	"github.com/wuchunfu/fileserver/routers"
 	"github.com/wuchunfu/fileserver/utils"
-	"github.com/wuchunfu/fileserver/utils/iputil"
+	"github.com/wuchunfu/fileserver/utils/ipx"
 	"net/http"
 	"os"
 	"os/signal"
@@ -51,7 +51,7 @@ func Run() {
 	}()
 
 	fmt.Printf("Local access address: http://127.0.0.1%s\n", addr)
-	ips := iputil.GetIntranetIp()
+	ips := ipx.GetIntranetIp()
 	for _, ipStr := range ips {
 		if ipStr != "" {
 			fmt.Printf("Network access address: http://%s%s\n", ipStr, addr)

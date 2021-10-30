@@ -5,6 +5,7 @@ import (
 	"github.com/wuchunfu/fileserver/middleware/configx"
 	"github.com/wuchunfu/fileserver/middleware/logx"
 	"github.com/wuchunfu/fileserver/utils"
+	"github.com/wuchunfu/fileserver/utils/bytex"
 	"github.com/wuchunfu/fileserver/utils/filex"
 	"net/http"
 	"os"
@@ -32,7 +33,7 @@ func Upload(ctx *gin.Context) {
 			// 循环对每个文件进行处理
 			for _, file := range files {
 				fileName := file.Filename
-				fileSize := utils.FormatFileSize(file.Size)
+				fileSize := bytex.FormatFileSize(file.Size)
 				err := ctx.SaveUploadedFile(file, fileName)
 				if err != nil {
 					logx.GetLogger().Sugar().Errorf("File upload failed!\n%s", err.Error())
