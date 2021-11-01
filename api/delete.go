@@ -38,5 +38,9 @@ func Delete(ctx *gin.Context) {
 			logx.GetLogger().Sugar().Infof("File downloaded failed: %s", fileName)
 		}
 	}
-	ctx.JSON(http.StatusOK, gin.H{"msg": "File deleted successfully!"})
+	ctx.JSON(http.StatusOK, gin.H{
+		"code": http.StatusOK,
+		"msg":  "File deleted successfully!",
+		"data": nil,
+	})
 }

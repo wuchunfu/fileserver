@@ -1,13 +1,12 @@
 package routers
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/wuchunfu/fileserver/api"
 	"github.com/wuchunfu/fileserver/middleware/configx"
 	"github.com/wuchunfu/fileserver/middleware/cors"
 	"github.com/wuchunfu/fileserver/middleware/logx"
-	"github.com/wuchunfu/fileserver/utils"
+	"github.com/wuchunfu/fileserver/web"
 )
 
 func InitRouter() *gin.Engine {
@@ -22,14 +21,15 @@ func InitRouter() *gin.Engine {
 	// 允许使用跨域请求  全局中间件
 	router.Use(cors.Cors())
 	router.GET("/ping", api.PingHandler)
-	router.GET("/", api.IndexHandler)
-	installPath, ok := utils.CheckFsHome()
-	if ok {
-		router.LoadHTMLGlob(fmt.Sprintf("%s%s", installPath, "/web/templates/*"))
-		router.Static("/static", fmt.Sprintf("%s%s", installPath, "/web/static"))
-	} else {
-		logx.GetLogger().Sugar().Warn("Page not found!")
-	}
+	router.GET("/", api.RedirectIndex)
+	router.StaticFS("/ui", web.GetFS())
+	//installPath, ok := utils.CheckFsHome()
+	//if ok {
+	//	router.LoadHTMLGlob(fmt.Sprintf("%s%s", installPath, "/web/templates/*"))
+	//	router.Static("/static", fmt.Sprintf("%s%s", installPath, "/web/static"))
+	//} else {
+	//	logx.GetLogger().Sugar().Warn("Page not found!")
+	//}
 	setting := configx.ServerSetting
 	router.Static("/files", setting.System.StoragePath)
 	router.GET("/list", api.List)

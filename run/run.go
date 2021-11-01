@@ -7,7 +7,6 @@ import (
 	"github.com/wuchunfu/fileserver/middleware/configx"
 	"github.com/wuchunfu/fileserver/middleware/logx"
 	"github.com/wuchunfu/fileserver/routers"
-	"github.com/wuchunfu/fileserver/utils"
 	"github.com/wuchunfu/fileserver/utils/ipx"
 	"net/http"
 	"os"
@@ -21,7 +20,7 @@ func Run() {
 
 	logx.InitLog(&setting.Log)
 
-	utils.CheckFsHome()
+	//utils.CheckFsHome()
 
 	runtime.GOMAXPROCS(runtime.NumCPU())
 

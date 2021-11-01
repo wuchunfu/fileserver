@@ -40,5 +40,9 @@ func List(ctx *gin.Context) {
 		return nil
 	})
 	// 返回目录json数据
-	ctx.JSON(http.StatusOK, gin.H{"data": fileList})
+	ctx.JSON(http.StatusOK, gin.H{
+		"code": http.StatusOK,
+		"msg":  "Get data successfully!",
+		"data": fileList,
+	})
 }
