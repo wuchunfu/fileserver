@@ -232,21 +232,24 @@ export default defineComponent({
         // console.log(res);
         const blob = new Blob([res.data], { type: 'application/octet-stream' })
         // 非IE下载
-        if ('download' in document.createElement('a')) {
-          const link = document.createElement('a')
-          link.download = fileName
-          link.style.display = 'none'
-          link.href = URL.createObjectURL(blob)
-          document.body.appendChild(link)
-          link.click()
-          // 释放URL 对象
-          URL.revokeObjectURL(link.href)
-          document.body.removeChild(link)
-        } else {
-          ElMessage({
-            type: 'warning',
-            message: '下载失败, 不支持此浏览器下载，建议使用 Chrome 浏览器!'
-          });
+        // 在拿到数据流之后,把流转为指定文件格式并创建a标签,模拟点击下载,实现文件下载功能
+        // 通过 FileReader 接受并解析, 读取文件
+        let reader = new FileReader();
+        // 把读取的Blob和File对象以data：URL的形式返回，它与readAsArrayBuffer方法相同
+        reader.readAsDataURL(blob);
+        // 加载监听
+        reader.onloadend = (e: any) => {
+          let link = document.createElement('a');
+          link.style.display = 'none';
+          link.href = e.target.result;
+          link.setAttribute("download", decodeURI(fileName));
+          // 兼容：某些浏览器不支持HTML5的download属性
+          if (typeof link.download === 'undefined') {
+            link.setAttribute('target', '_blank');
+          }
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
         }
       }).catch((res: any) => {
         console.log(res);
