@@ -231,11 +231,23 @@ export default defineComponent({
       getData(`/download/${ fileName }`, config).then((res: any) => {
         // console.log(res);
         const blob = new Blob([res.data], { type: 'application/octet-stream' })
-        const url = URL.createObjectURL(blob)
-        const a = document.createElement('a')
-        a.setAttribute('href', url)
-        a.setAttribute('download', fileName)
-        a.click()
+        // 非IE下载
+        if ('download' in document.createElement('a')) {
+          const link = document.createElement('a')
+          link.download = fileName
+          link.style.display = 'none'
+          link.href = URL.createObjectURL(blob)
+          document.body.appendChild(link)
+          link.click()
+          // 释放URL 对象
+          URL.revokeObjectURL(link.href)
+          document.body.removeChild(link)
+        } else {
+          ElMessage({
+            type: 'warning',
+            message: '下载失败, 不支持此浏览器下载，建议使用 Chrome 浏览器!'
+          });
+        }
       }).catch((res: any) => {
         console.log(res);
         ElMessage({
