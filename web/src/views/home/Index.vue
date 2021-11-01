@@ -180,7 +180,6 @@ export default defineComponent({
     };
 
     const handleUpload = (fileList: any) => {
-      state.uploadFlag = true;
       let formData = new FormData();
       formData.set("formDataFile", fileList.file);
       let config: AxiosRequestConfig = {
@@ -189,6 +188,7 @@ export default defineComponent({
         },
         onUploadProgress: (event: any) => {
           if (event.lengthComputable) {
+            state.uploadFlag = true;
             state.uploadPercent = Number((event.loaded / event.total * 100).toFixed(0));
           }
         },
