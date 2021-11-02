@@ -115,6 +115,7 @@ import { i18n } from '/@/i18n';
 import { ElMessage, ElMessageBox } from "element-plus";
 import { AxiosRequestConfig } from "axios";
 import { deleteData, getData, uploadData } from "/@/api";
+import { Local } from "/@/utils/storage";
 
 export default defineComponent({
   name: 'home',
@@ -137,11 +138,15 @@ export default defineComponent({
     }
 
     onMounted(() => {
+      const lang = Local.get("language");
+      i18n.global.locale = lang;
+      state.disabledI18n = lang != null ? lang : state.disabledI18n;
       getTableData();
     });
 
     // 语言切换
     const onLanguageChange = (lang: string) => {
+      Local.set("language", lang)
       i18n.global.locale = lang;
       state.disabledI18n = lang;
     };
