@@ -47,9 +47,10 @@
               @selection-change="handleSelectionChange"
             >
               <el-table-column align="center" type="selection" width="50px"></el-table-column>
-              <el-table-column align="center" prop="fileName" label="名称"></el-table-column>
-              <el-table-column align="center" prop="fileSize" label="大小"></el-table-column>
-              <el-table-column align="center" prop="dateTime" label="上传时间"></el-table-column>
+              <el-table-column align="center" prop="fileName" label="文件名称"></el-table-column>
+              <el-table-column align="center" prop="fileType" label="文件类型"></el-table-column>
+              <el-table-column align="center" prop="fileSize" label="文件大小"></el-table-column>
+              <el-table-column align="center" prop="dateTime" label="修改时间"></el-table-column>
               <el-table-column align="center" width="100px" label="操作">
                 <template v-slot="scope">
                   <el-button
@@ -259,54 +260,6 @@ export default defineComponent({
         });
       });
     };
-
-    // const handleDownload = (index: number, rows: any) => {
-    //   const fileName = rows.fileName;
-    //   let config: AxiosRequestConfig = {
-    //     headers: {
-    //       'Accept': 'application/json',
-    //       'Content-Type': 'application/json; charset=utf-8',
-    //       'withCredentials': 'true'
-    //     },
-    //     // 表明返回服务器返回的数据类型
-    //     // 表示接收的数据为二进制文件流
-    //     responseType: 'blob',
-    //   }
-    //   getData(`/download/${ fileName }`, config).then((res: any) => {
-    //     // console.log(res);
-    //     const blob = new Blob([res.data], { type: 'application/octet-stream' })
-    //     if (typeof window.navigator.msSaveBlob !== 'undefined') {
-    //       // 兼容IE10+，window.navigator.msSaveBlob：以本地方式保存文件
-    //       window.navigator.msSaveBlob(blob, decodeURI(fileName));
-    //     } else {
-    //       // 在拿到数据流之后,把流转为指定文件格式并创建a标签,模拟点击下载,实现文件下载功能
-    //       // 通过 FileReader 接受并解析, 读取文件
-    //       let reader = new FileReader();
-    //       // 把读取的Blob和File对象以data：URL的形式返回，它与readAsArrayBuffer方法相同
-    //       reader.readAsDataURL(blob);
-    //       // 加载监听
-    //       reader.onloadend = (e) => {
-    //         let link = document.createElement('a');
-    //         link.style.display = 'none';
-    //         link.href = e.target.result;
-    //         link.setAttribute("download", decodeURI(fileName));
-    //         // 兼容：某些浏览器不支持HTML5的download属性
-    //         if (typeof link.download === 'undefined') {
-    //           link.setAttribute('target', '_blank');
-    //         }
-    //         document.body.appendChild(link);
-    //         link.click();
-    //         document.body.removeChild(link);
-    //       }
-    //     }
-    //   }).catch((res: any) => {
-    //     console.log(res);
-    //     ElMessage({
-    //       type: 'error',
-    //       message: '下载失败!'
-    //     });
-    //   });
-    // };
 
     const handleBatchDelete = () => {
       const fileNameList = state.multipleSelection

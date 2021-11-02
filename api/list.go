@@ -3,15 +3,19 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/wuchunfu/fileserver/middleware/configx"
+	"github.com/wuchunfu/fileserver/middleware/logx"
 	"github.com/wuchunfu/fileserver/utils/bytex"
 	"github.com/wuchunfu/fileserver/utils/datetimex"
+	"io/fs"
 	"net/http"
-	"os"
 	"path/filepath"
 )
 
 type FileList struct {
+	BasePath string `json:"basePath"`
+	FilePath string `json:"filePath"`
 	FileName string `json:"fileName"`
+	FileType string `json:"fileType"`
 	FileSize string `json:"fileSize"`
 	DateTime string `json:"dateTime"`
 }
@@ -22,23 +26,46 @@ func List(ctx *gin.Context) {
 	storagePath := setting.System.StoragePath
 
 	fileList := make([]FileList, 0)
-	storageAbs, _ := filepath.Abs(storagePath)
+	storageAbsPath, _ := filepath.Abs(storagePath)
 	// 遍历目录，读出文件名、大小
-	filepath.Walk(storageAbs, func(filePath string, fileInfo os.FileInfo, err error) error {
+	err := filepath.WalkDir(storageAbsPath, func(filePath string, info fs.DirEntry, err error) error {
+		fileInfo, err := info.Info()
 		if nil == fileInfo {
 			return err
 		}
-		if fileInfo.IsDir() {
+		if filePath == storageAbsPath {
 			return nil
 		}
-		list := &FileList{
-			FileName: fileInfo.Name(),
-			FileSize: bytex.FormatFileSize(fileInfo.Size()),
-			DateTime: datetimex.FormatDateTime(fileInfo.ModTime()),
+		list := &FileList{}
+		if info.IsDir() {
+			list = &FileList{
+				BasePath: storageAbsPath,
+				FilePath: filePath,
+				FileName: info.Name(),
+				FileType: "dir",
+				FileSize: "-",
+				DateTime: datetimex.FormatDateTime(fileInfo.ModTime()),
+			}
+			fileList = append(fileList, *list)
+			return filepath.SkipDir
 		}
-		fileList = append(fileList, *list)
+		if filePath != storageAbsPath {
+			list = &FileList{
+				BasePath: storageAbsPath,
+				FilePath: filePath,
+				FileName: info.Name(),
+				FileType: "file",
+				FileSize: bytex.FormatFileSize(fileInfo.Size()),
+				DateTime: datetimex.FormatDateTime(fileInfo.ModTime()),
+			}
+			fileList = append(fileList, *list)
+		}
 		return nil
 	})
+	if err != nil {
+		logx.GetLogger().Sugar().Errorf("Traversal file directory failed!\n%s", err.Error())
+		panic(err.Error())
+	}
 	// 返回目录json数据
 	ctx.JSON(http.StatusOK, gin.H{
 		"code": http.StatusOK,
