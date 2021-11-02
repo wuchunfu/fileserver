@@ -16,8 +16,6 @@ func Upload(ctx *gin.Context) {
 	setting := configx.ServerSetting
 	storagePath := setting.System.StoragePath
 
-	//installPath, ok := utils.CheckFsHome()
-	//if ok {
 	storagePathAbs, _ := filepath.Abs(storagePath)
 	form, _ := ctx.MultipartForm()
 	if form != nil {
@@ -29,6 +27,14 @@ func Upload(ctx *gin.Context) {
 		os.Chdir(storagePathAbs)
 		// 获取所有上传文件信息
 		files := form.File["formDataFile"]
+		if len(files) <= 0 {
+			ctx.JSON(http.StatusNoContent, gin.H{
+				"code": http.StatusNoContent,
+				"msg":  "The file is empty!",
+				"data": nil,
+			})
+			return
+		}
 		// 循环对每个文件进行处理
 		for _, file := range files {
 			fileName := file.Filename
@@ -48,11 +54,4 @@ func Upload(ctx *gin.Context) {
 		"msg":  "File uploaded successfully!",
 		"data": nil,
 	})
-	//} else {
-	//	ctx.JSON(http.StatusOK, gin.H{
-	//		"code": http.StatusOK,
-	//		"msg":  "File uploaded failed!",
-	//		"data": nil,
-	//	})
-	//}
 }
