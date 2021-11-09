@@ -16,15 +16,15 @@ func Upload(ctx *gin.Context) {
 	setting := configx.ServerSetting
 	storagePath := setting.System.StoragePath
 
-	storagePathAbs, _ := filepath.Abs(storagePath)
+	storageAbsPath, _ := filepath.Abs(storagePath)
 	form, _ := ctx.MultipartForm()
 	if form != nil {
-		isExistPath := filex.FilePathExists(storagePathAbs)
+		isExistPath := filex.FilePathExists(storageAbsPath)
 		if !isExistPath {
-			filex.MkdirAll(storagePathAbs)
+			filex.MkdirAll(storageAbsPath)
 		}
 		// 进入存储目录
-		os.Chdir(storagePathAbs)
+		os.Chdir(storageAbsPath)
 		// 获取所有上传文件信息
 		files := form.File["formDataFile"]
 		if len(files) <= 0 {
@@ -47,7 +47,7 @@ func Upload(ctx *gin.Context) {
 			logx.GetLogger().Sugar().Infof("File uploaded successfully: fileName：%s fileSize: %s\n", fileName, fileSize)
 		}
 		// 退出存储目录
-		defer os.Chdir(storagePathAbs)
+		defer os.Chdir(storageAbsPath)
 	}
 	ctx.JSON(http.StatusOK, gin.H{
 		"code": http.StatusOK,

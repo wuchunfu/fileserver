@@ -6,6 +6,7 @@ import (
 	"github.com/wuchunfu/fileserver/middleware/logx"
 	"github.com/wuchunfu/fileserver/utils/bytex"
 	"github.com/wuchunfu/fileserver/utils/datetimex"
+	"github.com/wuchunfu/fileserver/utils/filex"
 	"io/fs"
 	"net/http"
 	"path/filepath"
@@ -27,6 +28,10 @@ func List(ctx *gin.Context) {
 
 	fileList := make([]FileList, 0)
 	storageAbsPath, _ := filepath.Abs(storagePath)
+	isExistPath := filex.FilePathExists(storageAbsPath)
+	if !isExistPath {
+		filex.MkdirAll(storageAbsPath)
+	}
 	// 遍历目录，读出文件名、大小
 	err := filepath.WalkDir(storageAbsPath, func(filePath string, info fs.DirEntry, err error) error {
 		fileInfo, err := info.Info()
