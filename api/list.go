@@ -47,7 +47,7 @@ func List(ctx *gin.Context) {
 				BasePath: storageAbsPath,
 				FilePath: filePath,
 				FileName: info.Name(),
-				FileType: "dir",
+				FileType: "folder",
 				FileSize: "-",
 				DateTime: datetimex.FormatDateTime(fileInfo.ModTime()),
 			}
