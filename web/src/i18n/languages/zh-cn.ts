@@ -5,6 +5,7 @@ export const lang = {
   language: '简体中文',
   router: {
     home: '首页',
+    login: '登录',
     system: '系统设置',
     systemUser: '用户管理',
   },

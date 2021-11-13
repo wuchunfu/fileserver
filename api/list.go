@@ -17,6 +17,7 @@ import (
 
 type FileList struct {
 	BasePath   string `json:"basePath"`
+	ParentPath string `json:"parentPath"`
 	FilePath   string `json:"filePath"`
 	FileName   string `json:"fileName"`
 	IsFile     bool   `json:"isFile"`
@@ -30,19 +31,19 @@ type FileList struct {
 func List(ctx *gin.Context) {
 	setting := configx.ServerSetting
 	storagePath := setting.System.StoragePath
+	storageAbsPath, _ := filepath.Abs(storagePath)
+	isExistPath := filex.FilePathExists(storageAbsPath)
+	if !isExistPath {
+		filex.MkdirAll(storageAbsPath)
+	}
 
 	fileList := &[]FileList{}
-	basePath := ctx.Query("basePath")
-	logx.GetLogger().Sugar().Infof("basePath: %s", basePath)
-	if basePath == "" {
-		storageAbsPath, _ := filepath.Abs(storagePath)
-		isExistPath := filex.FilePathExists(storageAbsPath)
-		if !isExistPath {
-			filex.MkdirAll(storageAbsPath)
-		}
+	parentPath := ctx.Query("parentPath")
+	logx.GetLogger().Sugar().Infof("parentPath: %s", parentPath)
+	if parentPath == "" {
 		fileList = ListFolder(storageAbsPath)
 	} else {
-		fileList = ListFolder(basePath)
+		fileList = ListFolder(parentPath)
 	}
 	// 返回目录json数据
 	ctx.JSON(http.StatusOK, gin.H{
@@ -52,7 +53,29 @@ func List(ctx *gin.Context) {
 	})
 }
 
+func ChangeFolder(ctx *gin.Context) {
+	fileList := &[]FileList{}
+
+	parentPath := ctx.Query("parentPath")
+	logx.GetLogger().Sugar().Infof("parentPath: %s", parentPath)
+	if parentPath != "" {
+		parentPath := filepath.Dir(parentPath)
+		fileList = ListFolder(parentPath)
+	}
+	// 返回目录json数据
+	ctx.JSON(http.StatusOK, gin.H{
+		"code": http.StatusOK,
+		"msg":  "Get data successfully!",
+		"data": fileList,
+	})
+}
+
+// ListFolder 列出文件夹中的文件夹及文件
 func ListFolder(storageAbsPath string) *[]FileList {
+	setting := configx.ServerSetting
+	storagePath := setting.System.StoragePath
+	basePath, _ := filepath.Abs(storagePath)
+
 	fileList := make([]FileList, 0)
 	// 遍历目录，读出文件名、大小
 	err := filepath.WalkDir(storageAbsPath, func(filePath string, info fs.DirEntry, err error) error {
@@ -68,12 +91,13 @@ func ListFolder(storageAbsPath string) *[]FileList {
 			fileName := info.Name()
 			dateTime := datetimex.FormatDateTime(fileInfo.ModTime())
 			list = &FileList{
-				BasePath: storageAbsPath,
-				FilePath: filePath,
-				FileName: fileName,
-				IsFile:   false,
-				FileSize: "-",
-				DateTime: dateTime,
+				BasePath:   basePath,
+				ParentPath: storageAbsPath,
+				FilePath:   filePath,
+				FileName:   fileName,
+				IsFile:     false,
+				FileSize:   "-",
+				DateTime:   dateTime,
 			}
 			fileList = append(fileList, *list)
 			return filepath.SkipDir
@@ -85,7 +109,8 @@ func ListFolder(storageAbsPath string) *[]FileList {
 			fileSize := bytex.FormatFileSize(fileInfo.Size())
 			dateTime := datetimex.FormatDateTime(fileInfo.ModTime())
 			list = &FileList{
-				BasePath:   storageAbsPath,
+				BasePath:   basePath,
+				ParentPath: storageAbsPath,
 				FilePath:   filePath,
 				FileName:   fileName,
 				IsFile:     true,

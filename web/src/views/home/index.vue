@@ -30,6 +30,14 @@
               文件共享系统
             </div>
             <div style="float: left; padding-bottom: 10px;">
+              <el-button type="primary" :disabled="folderDisabled" @click="handleChangeDir('all')">
+                <icon-home theme="filled" size="10" fill="#FFFFFF"/>
+                主页
+              </el-button>
+              <el-button type="primary" :disabled="folderDisabled" @click="handleChangeDir('previous')">
+                <icon-back theme="filled" size="10" fill="#FFFFFF"/>
+                上一级
+              </el-button>
               <el-button type="primary" @click="dialogVisible = true">
                 <i class="el-icon-upload el-icon--right"></i> 文件上传
               </el-button>
@@ -51,19 +59,19 @@
               <el-table-column align="left" prop="fileName" label="文件名称">
                 <template #default="scope">
                   <div v-if="scope.row.isFile">
-                    <file-txt v-if="scope.row.fileType === 'txt'" theme="filled" size="20" fill="#409EFF"/>
-                    <file-pdf v-if="scope.row.fileType === 'pdf'" theme="filled" size="20" fill="#409EFF"/>
-                    <file-word v-if="scope.row.fileType === 'docx'" theme="filled" size="20" fill="#409EFF"/>
-                    <file-excel v-if="scope.row.fileType === 'xlsx'" theme="filled" size="20" fill="#409EFF"/>
-                    <file-ppt v-if="scope.row.fileType === 'pptx'" theme="filled" size="20" fill="#409EFF"/>
-                    <image-files v-if="scope.row.fileType === 'image'" theme="filled" size="20" fill="#409EFF"/>
-                    <video-file v-if="scope.row.fileType === 'video'" theme="filled" size="20" fill="#409EFF"/>
-                    <file-music v-if="scope.row.fileType === 'audio'" theme="filled" size="20" fill="#409EFF"/>
-                    <file-zip v-if="scope.row.fileType === 'zip'" theme="filled" size="20" fill="#409EFF"/>
+                    <icon-file-txt v-if="scope.row.fileType === 'txt'" theme="filled" size="20" fill="#409EFF"/>
+                    <icon-file-pdf v-if="scope.row.fileType === 'pdf'" theme="filled" size="20" fill="#409EFF"/>
+                    <icon-file-word v-if="scope.row.fileType === 'docx'" theme="filled" size="20" fill="#409EFF"/>
+                    <icon-file-excel v-if="scope.row.fileType === 'xlsx'" theme="filled" size="20" fill="#409EFF"/>
+                    <icon-file-ppt v-if="scope.row.fileType === 'pptx'" theme="filled" size="20" fill="#409EFF"/>
+                    <icon-image-files v-if="scope.row.fileType === 'image'" theme="filled" size="20" fill="#409EFF"/>
+                    <icon-video-file v-if="scope.row.fileType === 'video'" theme="filled" size="20" fill="#409EFF"/>
+                    <icon-file-music v-if="scope.row.fileType === 'audio'" theme="filled" size="20" fill="#409EFF"/>
+                    <icon-file-zip v-if="scope.row.fileType === 'zip'" theme="filled" size="20" fill="#409EFF"/>
                     <span style="margin-left: 5px">{{ scope.row.fileName }}</span>
                   </div>
                   <div v-else>
-                    <folder-close theme="filled" size="20" fill="#409EFF"/>
+                    <icon-folder-close theme="filled" size="20" fill="#409EFF"/>
                     <span style="margin-left: 5px;">{{ scope.row.fileName }}</span>
                   </div>
                 </template>
@@ -143,6 +151,8 @@ export default defineComponent({
       activeIndex: '1',
       disabledI18n: 'zh-cn',
       dialogVisible: false,
+      fileParentPath: "",
+      folderDisabled: true,
       dataList: [],
       multipleSelection: [] as Array<string>,
       fileList: [] as Array<string>,
@@ -186,9 +196,11 @@ export default defineComponent({
     };
 
     const getTableData = () => {
-      const params = {}
+      const params = {
+        parentPath: state.fileParentPath
+      }
       getData('/list', params).then((res: any) => {
-        console.log(res.data);
+        // console.log(res.data);
         state.dataList = res.data.data;
       }).catch((res: any) => {
         console.log(res);
@@ -309,13 +321,31 @@ export default defineComponent({
 
     const handleListFolder = (row: any, column: any, cell: any, event: any) => {
       const data = JSON.parse(JSON.stringify(row));
+      // console.log(data)
       const isFile = data.isFile;
       if (!isFile) {
+        state.folderDisabled = false
+        state.fileParentPath = data.filePath
+        getTableData()
+      }
+    };
+
+    const handleChangeDir = (flag: string) => {
+      if ("all" === flag) {
+        state.fileParentPath = ""
+        state.folderDisabled = true
+        getTableData()
+      } else if ("previous" === flag) {
         const params = {
-          basePath: data.filePath
+          parentPath: state.fileParentPath
         }
-        getData('/list', params).then((res: any) => {
-          console.log(res.data);
+        getData('/changeFolder', params).then((res: any) => {
+          // console.log(res.data);
+          let data = JSON.parse(JSON.stringify(res.data.data[0]));
+          if (data.parentPath === data.basePath) {
+            state.folderDisabled = true
+          }
+          state.fileParentPath = data.parentPath
           state.dataList = res.data.data;
         }).catch((res: any) => {
           console.log(res);
@@ -325,7 +355,7 @@ export default defineComponent({
           });
         });
       }
-    }
+    };
 
     // 提示信息
     const deleteTips = () => {
@@ -375,6 +405,7 @@ export default defineComponent({
       handleDownload,
       handleBatchDelete,
       handleListFolder,
+      handleChangeDir,
       deleteTips,
       handleClose
     };

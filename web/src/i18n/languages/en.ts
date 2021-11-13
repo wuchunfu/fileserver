@@ -5,6 +5,7 @@ export const lang = {
   language: 'English',
   router: {
     home: 'home',
+    login: 'login',
     system: 'system',
     systemUser: 'systemUser',
   },

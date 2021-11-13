@@ -17,7 +17,7 @@ const routes = [
     path: '/login',
     name: 'login',
     meta: {
-      title: 'message.router.home',
+      title: 'message.router.login',
     },
     component: () => import('/@/views/login/index.vue'),
   },
