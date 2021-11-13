@@ -47,8 +47,26 @@
               @selection-change="handleSelectionChange"
             >
               <el-table-column align="center" type="selection" width="50px"></el-table-column>
-              <el-table-column align="center" prop="fileName" label="文件名称"></el-table-column>
-              <el-table-column align="center" prop="fileType" label="文件类型"></el-table-column>
+              <el-table-column align="left" prop="fileName" label="文件名称">
+                <template #default="scope">
+                  <div v-if="scope.row.isFile">
+                    <file-txt v-if="scope.row.fileType === 'txt'" theme="filled" size="20" fill="#409EFF"/>
+                    <file-pdf v-if="scope.row.fileType === 'pdf'" theme="filled" size="20" fill="#409EFF"/>
+                    <file-word v-if="scope.row.fileType === 'docx'" theme="filled" size="20" fill="#409EFF"/>
+                    <file-excel v-if="scope.row.fileType === 'xlsx'" theme="filled" size="20" fill="#409EFF"/>
+                    <file-ppt v-if="scope.row.fileType === 'pptx'" theme="filled" size="20" fill="#409EFF"/>
+                    <image-files v-if="scope.row.fileType === 'image'" theme="filled" size="20" fill="#409EFF"/>
+                    <video-file v-if="scope.row.fileType === 'video'" theme="filled" size="20" fill="#409EFF"/>
+                    <file-music v-if="scope.row.fileType === 'audio'" theme="filled" size="20" fill="#409EFF"/>
+                    <file-zip v-if="scope.row.fileType === 'zip'" theme="filled" size="20" fill="#409EFF"/>
+                    <span style="margin-left: 5px">{{ scope.row.fileName }}</span>
+                  </div>
+                  <div v-else>
+                    <folder-close theme="filled" size="20" fill="#409EFF"/>
+                    <span style="margin-left: 5px;">{{ scope.row.fileName }}</span>
+                  </div>
+                </template>
+              </el-table-column>
               <el-table-column align="center" prop="fileSize" label="文件大小"></el-table-column>
               <el-table-column align="center" prop="dateTime" label="修改时间"></el-table-column>
               <el-table-column align="center" width="100px" label="操作">
@@ -169,7 +187,7 @@ export default defineComponent({
     const getTableData = () => {
       const params = {}
       getData('/list', params).then((res: any) => {
-        // console.log(res.data);
+        console.log(res.data);
         state.dataList = res.data.data;
       }).catch((res: any) => {
         console.log(res);

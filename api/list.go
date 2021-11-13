@@ -6,19 +6,24 @@ import (
 	"github.com/wuchunfu/fileserver/middleware/logx"
 	"github.com/wuchunfu/fileserver/utils/bytex"
 	"github.com/wuchunfu/fileserver/utils/datetimex"
+	"github.com/wuchunfu/fileserver/utils/filetypex"
 	"github.com/wuchunfu/fileserver/utils/filex"
 	"io/fs"
 	"net/http"
+	"path"
 	"path/filepath"
+	"strings"
 )
 
 type FileList struct {
-	BasePath string `json:"basePath"`
-	FilePath string `json:"filePath"`
-	FileName string `json:"fileName"`
-	FileType string `json:"fileType"`
-	FileSize string `json:"fileSize"`
-	DateTime string `json:"dateTime"`
+	BasePath   string `json:"basePath"`
+	FilePath   string `json:"filePath"`
+	FileName   string `json:"fileName"`
+	IsFile     bool   `json:"isFile"`
+	FileType   string `json:"fileType"`
+	FileSize   string `json:"fileSize"`
+	SuffixName string `json:"suffixName"`
+	DateTime   string `json:"dateTime"`
 }
 
 // List 文件列表
@@ -43,25 +48,34 @@ func List(ctx *gin.Context) {
 		}
 		list := &FileList{}
 		if info.IsDir() {
+			fileName := info.Name()
+			dateTime := datetimex.FormatDateTime(fileInfo.ModTime())
 			list = &FileList{
 				BasePath: storageAbsPath,
 				FilePath: filePath,
-				FileName: info.Name(),
-				FileType: "folder",
+				FileName: fileName,
+				IsFile:   false,
 				FileSize: "-",
-				DateTime: datetimex.FormatDateTime(fileInfo.ModTime()),
+				DateTime: dateTime,
 			}
 			fileList = append(fileList, *list)
 			return filepath.SkipDir
 		}
 		if filePath != storageAbsPath {
+			fileName := info.Name()
+			suffixName := strings.ToLower(path.Ext(fileName))
+			fileType := filetypex.FileType(suffixName)
+			fileSize := bytex.FormatFileSize(fileInfo.Size())
+			dateTime := datetimex.FormatDateTime(fileInfo.ModTime())
 			list = &FileList{
-				BasePath: storageAbsPath,
-				FilePath: filePath,
-				FileName: info.Name(),
-				FileType: "file",
-				FileSize: bytex.FormatFileSize(fileInfo.Size()),
-				DateTime: datetimex.FormatDateTime(fileInfo.ModTime()),
+				BasePath:   storageAbsPath,
+				FilePath:   filePath,
+				FileName:   fileName,
+				IsFile:     true,
+				FileType:   fileType,
+				SuffixName: suffixName,
+				FileSize:   fileSize,
+				DateTime:   dateTime,
 			}
 			fileList = append(fileList, *list)
 		}
