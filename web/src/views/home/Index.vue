@@ -45,6 +45,7 @@
               tooltip-effect="dark"
               style="width: 100%; margin-top: 10px;"
               @selection-change="handleSelectionChange"
+              @cell-click="handleListFolder"
             >
               <el-table-column align="center" type="selection" width="50px"></el-table-column>
               <el-table-column align="left" prop="fileName" label="文件名称">
@@ -306,6 +307,26 @@ export default defineComponent({
       });
     };
 
+    const handleListFolder = (row: any, column: any, cell: any, event: any) => {
+      const data = JSON.parse(JSON.stringify(row));
+      const isFile = data.isFile;
+      if (!isFile) {
+        const params = {
+          basePath: data.filePath
+        }
+        getData('/list', params).then((res: any) => {
+          console.log(res.data);
+          state.dataList = res.data.data;
+        }).catch((res: any) => {
+          console.log(res);
+          ElMessage({
+            type: 'error',
+            message: '获取数据失败',
+          });
+        });
+      }
+    }
+
     // 提示信息
     const deleteTips = () => {
       ElMessageBox.confirm('此操作将永久删除该文件, 是否继续?', '提示', {
@@ -353,6 +374,7 @@ export default defineComponent({
       handleUpload,
       handleDownload,
       handleBatchDelete,
+      handleListFolder,
       deleteTips,
       handleClose
     };

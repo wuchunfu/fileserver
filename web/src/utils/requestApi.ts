@@ -1,11 +1,12 @@
 import request from '/@/utils/request'
 import { AxiosRequestConfig } from "axios";
 
-export const getRequest = (url: string, params?: object) => {
+export const getRequest = (url: string, params?: object, config?: AxiosRequestConfig) => {
   return request({
     method: 'get',
     url: url,
-    params: params
+    params: params,
+    ...config
   })
 }
 

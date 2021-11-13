@@ -31,12 +31,29 @@ func List(ctx *gin.Context) {
 	setting := configx.ServerSetting
 	storagePath := setting.System.StoragePath
 
-	fileList := make([]FileList, 0)
-	storageAbsPath, _ := filepath.Abs(storagePath)
-	isExistPath := filex.FilePathExists(storageAbsPath)
-	if !isExistPath {
-		filex.MkdirAll(storageAbsPath)
+	fileList := &[]FileList{}
+	basePath := ctx.Query("basePath")
+	logx.GetLogger().Sugar().Infof("basePath: %s", basePath)
+	if basePath == "" {
+		storageAbsPath, _ := filepath.Abs(storagePath)
+		isExistPath := filex.FilePathExists(storageAbsPath)
+		if !isExistPath {
+			filex.MkdirAll(storageAbsPath)
+		}
+		fileList = ListFolder(storageAbsPath)
+	} else {
+		fileList = ListFolder(basePath)
 	}
+	// 返回目录json数据
+	ctx.JSON(http.StatusOK, gin.H{
+		"code": http.StatusOK,
+		"msg":  "Get data successfully!",
+		"data": fileList,
+	})
+}
+
+func ListFolder(storageAbsPath string) *[]FileList {
+	fileList := make([]FileList, 0)
 	// 遍历目录，读出文件名、大小
 	err := filepath.WalkDir(storageAbsPath, func(filePath string, info fs.DirEntry, err error) error {
 		fileInfo, err := info.Info()
@@ -85,10 +102,5 @@ func List(ctx *gin.Context) {
 		logx.GetLogger().Sugar().Errorf("Traversal file directory failed!\n%s", err.Error())
 		panic(err.Error())
 	}
-	// 返回目录json数据
-	ctx.JSON(http.StatusOK, gin.H{
-		"code": http.StatusOK,
-		"msg":  "Get data successfully!",
-		"data": fileList,
-	})
+	return &fileList
 }
