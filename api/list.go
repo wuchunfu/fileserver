@@ -53,6 +53,48 @@ func List(ctx *gin.Context) {
 	})
 }
 
+func CreateFolder(ctx *gin.Context) {
+	setting := configx.ServerSetting
+	storagePath := setting.System.StoragePath
+	storageAbsPath, _ := filepath.Abs(storagePath)
+
+	dataMap := make(map[string]string)
+	err := ctx.BindJSON(&dataMap)
+	if err != nil {
+		return
+	}
+
+	fileStorageAbsPath := dataMap["storageAbsPath"]
+	logx.GetLogger().Sugar().Infof("fileStorageAbsPath: %s", fileStorageAbsPath)
+	folderName := dataMap["folderName"]
+	logx.GetLogger().Sugar().Infof("folderName: %s", folderName)
+
+	var fileSaveParentPath = storageAbsPath
+	if fileStorageAbsPath != "" {
+		fileSaveParentPath = fileStorageAbsPath
+	}
+
+	fileSaveAbsPath := filepath.Join(fileSaveParentPath, folderName)
+	logx.GetLogger().Sugar().Infof("fileSaveAbsPath: %s", fileSaveAbsPath)
+
+	isExistPath := filex.FilePathExists(fileSaveAbsPath)
+	if isExistPath {
+		ctx.JSON(http.StatusOK, gin.H{
+			"code": http.StatusCreated,
+			"msg":  "Folder already exists!",
+			"data": nil,
+		})
+	} else {
+		filex.MkdirAll(fileSaveAbsPath)
+		// 返回目录json数据
+		ctx.JSON(http.StatusOK, gin.H{
+			"code": http.StatusOK,
+			"msg":  "Folder create successfully!",
+			"data": nil,
+		})
+	}
+}
+
 func ChangeFolder(ctx *gin.Context) {
 	fileList := &[]FileList{}
 
@@ -65,7 +107,7 @@ func ChangeFolder(ctx *gin.Context) {
 	// 返回目录json数据
 	ctx.JSON(http.StatusOK, gin.H{
 		"code": http.StatusOK,
-		"msg":  "Get data successfully!",
+		"msg":  "Folder switch successfully!",
 		"data": fileList,
 	})
 }

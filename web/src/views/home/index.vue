@@ -30,18 +30,21 @@
               文件共享系统
             </div>
             <div style="float: left; padding-bottom: 10px;">
-              <el-button type="primary" :disabled="folderDisabled" @click="handleChangeDir('all')">
+              <el-button type="primary" :disabled="folderDisabled" @click="handleChangeFolder('all')">
                 <icon-home theme="filled" size="10" fill="#FFFFFF"/>
                 主页
               </el-button>
-              <el-button type="primary" :disabled="folderDisabled" @click="handleChangeDir('previous')">
+              <el-button type="primary" :disabled="folderDisabled" @click="handleChangeFolder('previous')">
                 <icon-back theme="filled" size="10" fill="#FFFFFF"/>
                 上一级
+              </el-button>
+              <el-button type="primary" @click="folderDialogVisible = true">
+                <i class="el-icon-folder-add el-icon--right"></i> 新建文件夹
               </el-button>
               <el-button type="primary" @click="dialogVisible = true">
                 <i class="el-icon-upload el-icon--right"></i> 文件上传
               </el-button>
-              <el-button type="primary" :disabled="disabled" @click="deleteTips">
+              <el-button type="danger" :disabled="deleteDisabled" @click="deleteTips">
                 <i class="el-icon-delete"></i> 批量删除
               </el-button>
             </div>
@@ -59,16 +62,42 @@
               <el-table-column align="left" prop="fileName" label="文件名称">
                 <template #default="scope">
                   <div v-if="scope.row.isFile">
-                    <icon-file-txt v-if="scope.row.fileType === 'txt'" theme="filled" size="20" fill="#409EFF"/>
-                    <icon-file-pdf v-if="scope.row.fileType === 'pdf'" theme="filled" size="20" fill="#409EFF"/>
-                    <icon-file-word v-if="scope.row.fileType === 'docx'" theme="filled" size="20" fill="#409EFF"/>
-                    <icon-file-excel v-if="scope.row.fileType === 'xlsx'" theme="filled" size="20" fill="#409EFF"/>
-                    <icon-file-ppt v-if="scope.row.fileType === 'pptx'" theme="filled" size="20" fill="#409EFF"/>
-                    <icon-image-files v-if="scope.row.fileType === 'image'" theme="filled" size="20" fill="#409EFF"/>
-                    <icon-video-file v-if="scope.row.fileType === 'video'" theme="filled" size="20" fill="#409EFF"/>
-                    <icon-file-music v-if="scope.row.fileType === 'audio'" theme="filled" size="20" fill="#409EFF"/>
-                    <icon-file-zip v-if="scope.row.fileType === 'zip'" theme="filled" size="20" fill="#409EFF"/>
-                    <span style="margin-left: 5px">{{ scope.row.fileName }}</span>
+                    <span v-if="scope.row.fileType === 'txt'">
+                      <icon-file-txt theme="filled" size="20" fill="#409EFF"/>
+                      <span style="margin-left: 5px">{{ scope.row.fileName }}</span>
+                    </span>
+                    <span v-if="scope.row.fileType === 'pdf'">
+                      <icon-file-pdf theme="filled" size="20" fill="#409EFF"/>
+                      <span style="margin-left: 5px">{{ scope.row.fileName }}</span>
+                    </span>
+                    <span v-if="scope.row.fileType === 'docx'">
+                      <icon-file-word theme="filled" size="20" fill="#409EFF"/>
+                      <span style="margin-left: 5px">{{ scope.row.fileName }}</span>
+                    </span>
+                    <span v-if="scope.row.fileType === 'xlsx'">
+                      <icon-file-excel theme="filled" size="20" fill="#409EFF"/>
+                      <span style="margin-left: 5px">{{ scope.row.fileName }}</span>
+                    </span>
+                    <span v-if="scope.row.fileType === 'pptx'">
+                      <icon-file-ppt theme="filled" size="20" fill="#409EFF"/>
+                      <span style="margin-left: 5px">{{ scope.row.fileName }}</span>
+                    </span>
+                    <span v-if="scope.row.fileType === 'image'">
+                      <icon-image-files theme="filled" size="20" fill="#409EFF"/>
+                      <span style="margin-left: 5px">{{ scope.row.fileName }}</span>
+                    </span>
+                    <span v-if="scope.row.fileType === 'video'">
+                      <icon-video-file theme="filled" size="20" fill="#409EFF"/>
+                      <span style="margin-left: 5px">{{ scope.row.fileName }}</span>
+                    </span>
+                    <span v-if="scope.row.fileType === 'audio'">
+                      <icon-file-music theme="filled" size="20" fill="#409EFF"/>
+                      <span style="margin-left: 5px">{{ scope.row.fileName }}</span>
+                    </span>
+                    <span v-if="scope.row.fileType === 'zip'">
+                      <icon-file-zip theme="filled" size="20" fill="#409EFF"/>
+                      <span style="margin-left: 5px">{{ scope.row.fileName }}</span>
+                    </span>
                   </div>
                   <div v-else>
                     <icon-folder-close theme="filled" size="20" fill="#409EFF"/>
@@ -91,6 +120,25 @@
                 </template>
               </el-table-column>
             </el-table>
+
+            <el-dialog
+              v-model="folderDialogVisible"
+              title="文件夹创建"
+              width="30%"
+              center
+              :before-close="handleClose"
+              :destroy-on-close="true"
+            >
+              <el-input v-model="folderName" @input="createFolderChange" placeholder="请输入文件夹名称" clearable/>
+              <template #footer>
+                <span class="dialog-footer">
+                  <el-button @click="handleCancelDialog">取 消</el-button>
+                  <el-button type="primary" :disabled="createFolderDisabled" @click="handleCreateFolder">
+                    <i class="el-icon-folder-add el-icon--right"></i> 新建
+                  </el-button>
+                </span>
+              </template>
+            </el-dialog>
 
             <el-dialog
               v-model="dialogVisible"
@@ -121,8 +169,8 @@
               <el-progress v-if="uploadFlag === true" :percentage="uploadPercent"></el-progress>
               <template #footer>
                 <span class="dialog-footer">
-                  <el-button @click="dialogVisible = false">取 消</el-button>
-                  <el-button type="primary" :disabled="disabled" @click="uploadSubmit">
+                  <el-button @click="handleCancelDialog">取 消</el-button>
+                  <el-button type="primary" :disabled="uploadDisabled" @click="uploadSubmit">
                     <i class="el-icon-upload el-icon--right"></i> 上传
                   </el-button>
                 </span>
@@ -141,7 +189,7 @@ import { defineComponent, onMounted, reactive, ref, toRefs } from "vue";
 import { i18n } from '/@/i18n';
 import { ElMessage, ElMessageBox } from "element-plus";
 import { AxiosRequestConfig } from "axios";
-import { deleteData, getData, uploadData } from "/@/api";
+import { deleteData, getData, postData, uploadData } from "/@/api";
 import { Local } from "/@/utils/storage";
 
 export default defineComponent({
@@ -150,15 +198,19 @@ export default defineComponent({
     const state = reactive({
       activeIndex: '1',
       disabledI18n: 'zh-cn',
+      folderDialogVisible: false,
+      folderName: "",
+      createFolderDisabled: true,
       dialogVisible: false,
       fileParentPath: "",
       folderDisabled: true,
-      dataList: [],
+      dataList: [] as any,
       multipleSelection: [] as Array<string>,
       fileList: [] as Array<string>,
       uploadFlag: false,
       uploadPercent: 0,
-      disabled: true,
+      deleteDisabled: true,
+      uploadDisabled: true,
       upload: ref(null) as any,
     });
 
@@ -181,17 +233,17 @@ export default defineComponent({
     };
 
     const handleChange = (file: any, fileList: Array<string>) => {
-      state.disabled = fileList.length === 0;
+      state.uploadDisabled = fileList.length === 0;
       state.fileList = fileList;
     };
     const beforeRemove = (file: any, fileList: Array<string>) => {
       return ElMessageBox.confirm(`确定移除 ${ file.name }？`);
     };
     const handleRemove = (file: any, fileList: Array<string>) => {
-      state.disabled = fileList.length === 0;
+      state.uploadDisabled = fileList.length === 0;
     };
     const handleSelectionChange = (selection: Array<string>) => {
-      state.disabled = selection.length === 0;
+      state.deleteDisabled = selection.length === 0;
       state.multipleSelection = selection.map((item: any) => JSON.parse(JSON.stringify(item)).fileName);
     };
 
@@ -219,6 +271,7 @@ export default defineComponent({
     const handleUpload = (fileList: any) => {
       let formData = new FormData();
       formData.set("formDataFile", fileList.file);
+      formData.set("storageAbsPath", state.fileParentPath);
       let config: AxiosRequestConfig = {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -238,7 +291,7 @@ export default defineComponent({
             state.uploadFlag = false;
             state.uploadPercent = 0;
             state.dialogVisible = false;
-            state.disabled = true;
+            state.uploadDisabled = true;
             state.fileList = [];
           }, 1000)
         }
@@ -298,7 +351,7 @@ export default defineComponent({
     };
 
     const handleBatchDelete = () => {
-      const fileNameList = state.multipleSelection
+      const fileNameList = state.multipleSelection;
       const params = {
         fileNameList: fileNameList
       }
@@ -319,6 +372,39 @@ export default defineComponent({
       });
     };
 
+    const createFolderChange = () => {
+      state.createFolderDisabled = state.folderName.length <= 0
+    }
+
+    const handleCreateFolder = () => {
+      const params = {
+        storageAbsPath: state.fileParentPath,
+        folderName: state.folderName
+      }
+      postData('/createFolder', params).then((res: any) => {
+        // console.log(res.data);
+        if (res !== undefined && res.data.code === 200) {
+          setTimeout(() => {
+            state.folderDialogVisible = false;
+            state.createFolderDisabled = true;
+            state.folderName = "";
+          }, 1000)
+        } else {
+          ElMessage({
+            type: 'error',
+            message: '文件夹已存在',
+          });
+        }
+        getTableData()
+      }).catch((res: any) => {
+        console.log(res);
+        ElMessage({
+          type: 'error',
+          message: '文件夹创建失败',
+        });
+      });
+    }
+
     const handleListFolder = (row: any, column: any, cell: any, event: any) => {
       const data = JSON.parse(JSON.stringify(row));
       // console.log(data)
@@ -330,10 +416,10 @@ export default defineComponent({
       }
     };
 
-    const handleChangeDir = (flag: string) => {
+    const handleChangeFolder = (flag: string) => {
       if ("all" === flag) {
-        state.fileParentPath = ""
-        state.folderDisabled = true
+        state.fileParentPath = "";
+        state.folderDisabled = true;
         getTableData()
       } else if ("previous" === flag) {
         const params = {
@@ -351,11 +437,20 @@ export default defineComponent({
           console.log(res);
           ElMessage({
             type: 'error',
-            message: '获取数据失败',
+            message: '文件夹切换失败',
           });
         });
       }
     };
+
+    const handleCancelDialog = () => {
+      state.folderDialogVisible = false;
+      state.createFolderDisabled = true;
+      state.dialogVisible = false;
+      state.uploadDisabled = true;
+      state.fileList = [];
+      state.folderName = "";
+    }
 
     // 提示信息
     const deleteTips = () => {
@@ -378,6 +473,9 @@ export default defineComponent({
     const handleClose = (done: any) => {
       ElMessageBox.confirm('确认关闭？').then(() => {
         state.fileList = [];
+        state.uploadDisabled = true;
+        state.folderName = "";
+        state.createFolderDisabled = true;
         done();
         ElMessage({
           type: 'success',
@@ -404,8 +502,11 @@ export default defineComponent({
       handleUpload,
       handleDownload,
       handleBatchDelete,
+      createFolderChange,
+      handleCreateFolder,
       handleListFolder,
-      handleChangeDir,
+      handleChangeFolder,
+      handleCancelDialog,
       deleteTips,
       handleClose
     };

@@ -37,6 +37,7 @@ func InitRouter() *gin.Engine {
 	router.GET("/download/:fileName", api.Download)
 	router.DELETE("/delete", api.Delete)
 	router.GET("/changeFolder", api.ChangeFolder)
+	router.POST("/createFolder", api.CreateFolder)
 	router.NoRoute(api.NoRouteHandler)
 	return router
 }

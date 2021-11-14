@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosRequestHeaders, AxiosResponse } from 'axios';
-import { ElMessage, ElMessageBox, ElNotification } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 import { Session } from '/@/utils/storage';
 
 // 配置新建一个 axios 实例
@@ -94,12 +94,6 @@ service.interceptors.response.use((response: AxiosResponse) => {
           type: 'error'
         })
         return Promise.reject(new Error("访问资源不存在"))
-      } else {
-        ElNotification({
-          title: 'Error',
-          message: '系统未知错误，请反馈给管理员',
-        });
-        return Promise.reject(service.interceptors.response);
       }
     } else {
       return response;
