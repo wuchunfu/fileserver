@@ -307,7 +307,8 @@ export default defineComponent({
 
     const handleDownload = (index: number, rows: any) => {
       const fileName = rows.fileName;
-      let config: AxiosRequestConfig = {
+      const filePath = rows.filePath;
+      const config: AxiosRequestConfig = {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json; charset=utf-8',
@@ -315,11 +316,17 @@ export default defineComponent({
         },
         // 表明返回服务器返回的数据类型
         // 表示接收的数据为二进制文件流
+        // 服务器返回的数据类型，这一项是必须的，流形式下载
         responseType: 'blob',
       }
 
-      getData(`/download/${ fileName }`, config).then((res: any) => {
-        // console.log(res);
+      const params = {
+        filePath: filePath,
+      }
+
+      postData('/download', params, config).then((res: any) => {
+        console.log(2222);
+        console.log(res);
         const blob = new Blob([res.data], { type: 'application/octet-stream' })
         // 非IE下载
         // 在拿到数据流之后,把流转为指定文件格式并创建a标签,模拟点击下载,实现文件下载功能
