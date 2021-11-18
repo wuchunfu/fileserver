@@ -49,11 +49,13 @@ func Run() {
 		}
 	}()
 
-	fmt.Printf("Local access address: http://127.0.0.1%s\n", addr)
+	localUrl := fmt.Sprintf("http://127.0.0.1%s", addr)
+	fmt.Printf("Local access address: %s\n", localUrl)
 	ips := ipx.GetIntranetIp()
 	for _, ipStr := range ips {
 		if ipStr != "" {
-			fmt.Printf("Network access address: http://%s%s\n", ipStr, addr)
+			url := fmt.Sprintf("http://%s%s", ipStr, addr)
+			fmt.Printf("Network access address: %s\n", url)
 		}
 	}
 	// 优雅地重启或停止
