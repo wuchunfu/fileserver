@@ -5,11 +5,9 @@ go 1.17
 require (
 	github.com/fsnotify/fsnotify v1.5.1
 	github.com/gin-gonic/gin v1.7.4
-	github.com/pkg/errors v0.8.1
 	github.com/spf13/cobra v1.2.1
 	github.com/spf13/viper v1.9.0
-	go.uber.org/zap v1.17.0
-	golang.org/x/text v0.3.6
+	go.uber.org/zap v1.20.0
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 )
 
@@ -39,6 +37,7 @@ require (
 	go.uber.org/multierr v1.6.0 // indirect
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
 	golang.org/x/sys v0.0.0-20210823070655-63515b42dcdf // indirect
+	golang.org/x/text v0.3.6 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/ini.v1 v1.63.2 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
