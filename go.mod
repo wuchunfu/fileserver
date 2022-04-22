@@ -3,7 +3,7 @@ module github.com/wuchunfu/fileserver
 go 1.17
 
 require (
-	github.com/fsnotify/fsnotify v1.5.1
+	github.com/fsnotify/fsnotify v1.5.3
 	github.com/gin-gonic/gin v1.7.7
 	github.com/spf13/cobra v1.4.0
 	github.com/spf13/viper v1.9.0
