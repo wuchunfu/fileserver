@@ -39,6 +39,9 @@ go list (go mod tidy)
 # 编译
 go build fileserver.go
 
+# 启动
+./fileserver config -f conf/config.yaml
+
 # web 访问
 http://127.0.0.1:9090
 ```

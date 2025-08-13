@@ -1,14 +1,15 @@
 package api
 
 import (
+	"net/http"
+	"os"
+	"path/filepath"
+
 	"github.com/gin-gonic/gin"
 	"github.com/wuchunfu/fileserver/middleware/configx"
 	"github.com/wuchunfu/fileserver/middleware/logx"
 	"github.com/wuchunfu/fileserver/utils/bytex"
 	"github.com/wuchunfu/fileserver/utils/filex"
-	"net/http"
-	"os"
-	"path/filepath"
 )
 
 // Upload 文件上传

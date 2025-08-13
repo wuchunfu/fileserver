@@ -1,6 +1,12 @@
 package api
 
 import (
+	"io/fs"
+	"net/http"
+	"path"
+	"path/filepath"
+	"strings"
+
 	"github.com/gin-gonic/gin"
 	"github.com/wuchunfu/fileserver/middleware/configx"
 	"github.com/wuchunfu/fileserver/middleware/logx"
@@ -8,11 +14,6 @@ import (
 	"github.com/wuchunfu/fileserver/utils/datetimex"
 	"github.com/wuchunfu/fileserver/utils/filetypex"
 	"github.com/wuchunfu/fileserver/utils/filex"
-	"io/fs"
-	"net/http"
-	"path"
-	"path/filepath"
-	"strings"
 )
 
 type FileList struct {

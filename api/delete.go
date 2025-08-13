@@ -2,13 +2,14 @@ package api
 
 import (
 	"fmt"
+	"net/http"
+	"os"
+	"path/filepath"
+
 	"github.com/gin-gonic/gin"
 	"github.com/wuchunfu/fileserver/middleware/configx"
 	"github.com/wuchunfu/fileserver/middleware/logx"
 	"github.com/wuchunfu/fileserver/utils/filex"
-	"net/http"
-	"os"
-	"path/filepath"
 )
 
 type DeleteFiles struct {

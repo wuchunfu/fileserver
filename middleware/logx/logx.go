@@ -1,11 +1,6 @@
 package logx
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/wuchunfu/fileserver/middleware/configx"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
-	"gopkg.in/natefinch/lumberjack.v2"
 	"net"
 	"net/http"
 	"net/http/httputil"
@@ -15,6 +10,12 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/wuchunfu/fileserver/middleware/configx"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 // ZapLogger 接收gin框架默认的日志

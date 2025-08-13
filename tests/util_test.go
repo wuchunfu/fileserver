@@ -2,8 +2,9 @@ package tests
 
 import (
 	"fmt"
-	"github.com/wuchunfu/fileserver/utils/filex"
 	"testing"
+
+	"github.com/wuchunfu/fileserver/utils/filex"
 )
 
 func TestIsAbsolutePath(t *testing.T) {

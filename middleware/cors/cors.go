@@ -2,9 +2,10 @@ package cors
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
+
+	"github.com/gin-gonic/gin"
 )
 
 // Cors 处理跨域请求,支持options访问

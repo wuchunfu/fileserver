@@ -2,11 +2,12 @@ package configx
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 	"github.com/wuchunfu/fileserver/utils/filex"
 	"go.uber.org/zap"
-	"os"
 )
 
 type System struct {

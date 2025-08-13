@@ -1,8 +1,9 @@
 package utils
 
 import (
-	"github.com/wuchunfu/fileserver/middleware/logx"
 	"os"
+
+	"github.com/wuchunfu/fileserver/middleware/logx"
 )
 
 // CheckFsHome 检查是否配置环境变量

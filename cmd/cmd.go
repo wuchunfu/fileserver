@@ -2,9 +2,10 @@ package cmd
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/spf13/cobra"
 	"github.com/wuchunfu/fileserver/cmd/config"
-	"os"
 )
 
 // rootCmd represents the base command when called without any subcommands

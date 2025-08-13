@@ -2,10 +2,11 @@ package api
 
 import (
 	"fmt"
+	"path/filepath"
+
 	"github.com/gin-gonic/gin"
 	"github.com/wuchunfu/fileserver/middleware/logx"
 	"github.com/wuchunfu/fileserver/utils/filex"
-	"path/filepath"
 )
 
 // Download 文件下载

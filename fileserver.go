@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+
 	"github.com/wuchunfu/fileserver/cmd"
 	"github.com/wuchunfu/fileserver/middleware/configx"
 	"github.com/wuchunfu/fileserver/run"

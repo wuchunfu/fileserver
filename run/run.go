@@ -3,16 +3,17 @@ package run
 import (
 	"context"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/wuchunfu/fileserver/middleware/configx"
-	"github.com/wuchunfu/fileserver/middleware/logx"
-	"github.com/wuchunfu/fileserver/routers"
-	"github.com/wuchunfu/fileserver/utils/ipx"
 	"net/http"
 	"os"
 	"os/signal"
 	"runtime"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/wuchunfu/fileserver/middleware/configx"
+	"github.com/wuchunfu/fileserver/middleware/logx"
+	"github.com/wuchunfu/fileserver/routers"
+	"github.com/wuchunfu/fileserver/utils/ipx"
 )
 
 func Run() {

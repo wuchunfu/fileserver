@@ -1,0 +1,52 @@
+name: CI-Lint
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+      - master
+  pull_request:
+
+concurrency:
+  group: CI-Lint-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    if: github.repository == 'wuchunfu/fileserver'
+    name: Lint
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+        go-version:
+          - 1.25
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+      - name: Setup Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go-version }}
+          cache-dependency-path: |
+            server/go.sum
+      - name: Cache Go modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/go/bin
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: Lint
+        uses: golangci/golangci-lint-action@v8
+        with:
+          version: v2.1
+          working-directory: ./
+          args: --timeout=90m
