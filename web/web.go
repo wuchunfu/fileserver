@@ -6,11 +6,11 @@ import (
 	"net/http"
 )
 
-//go:embed dist
-var eFS embed.FS
+//go:embed dist/*
+var embedFS embed.FS
 
 func GetFS() http.FileSystem {
-	subFS, err := fs.Sub(eFS, "dist")
+	subFS, err := fs.Sub(embedFS, "dist")
 	if err != nil {
 		panic(err)
 	}
