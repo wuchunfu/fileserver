@@ -2,8 +2,4 @@ version: "2"
 linters:
   disable:
     - unused
-issues:
-  exclude-rules:
-    - path: web/web.go
-      linters:
-        - govet
+    - govet
