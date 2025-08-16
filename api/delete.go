@@ -22,7 +22,10 @@ func Delete(ctx *gin.Context) {
 	storagePath := setting.System.StoragePath
 
 	deleteFiles := &DeleteFiles{}
-	ctx.Bind(deleteFiles)
+	if err := ctx.Bind(deleteFiles); err != nil {
+		logx.GetLogger().Sugar().Errorf("Delete file failed!\n%s", err.Error())
+		panic(err.Error())
+	}
 	for _, fileName := range deleteFiles.FileNameList {
 		storagePathAbs, _ := filepath.Abs(storagePath)
 		isExistPath := filex.FilePathExists(storagePathAbs)

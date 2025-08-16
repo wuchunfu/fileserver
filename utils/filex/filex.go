@@ -48,26 +48,20 @@ func FilePathExists(filePath string) bool {
 // Mkdir 创建目录
 func Mkdir(filePath string) bool {
 	err := os.Mkdir(filePath, os.ModePerm)
-	if err != nil {
-		return false
-	}
-	return true
+	return err == nil
 }
 
 // MkdirAll 递归创建目录
 func MkdirAll(filePath string) bool {
 	err := os.MkdirAll(filePath, os.ModePerm)
-	if err != nil {
-		return false
-	}
-	return true
+	return err == nil
 }
 
 func IsAbsolutePath(pathStr string) bool {
 	goos := runtime.GOOS
 	includeColon := strings.Contains(pathStr, string(os.PathListSeparator))
-	if includeColon == true || goos == "windows" {
-		paths := strings.Replace(pathStr, "\\", "/", -1)
+	if includeColon || goos == "windows" {
+		paths := strings.ReplaceAll(pathStr, "\\", "/")
 		index := strings.Index(paths, string(os.PathListSeparator))
 		return path.IsAbs(paths[index+1:])
 	}
@@ -101,6 +95,9 @@ func ReadFile(path string) string {
 		}
 	}(fi)
 	fd, err := io.ReadAll(fi)
+	if err != nil {
+		return ""
+	}
 	return string(fd)
 }
 

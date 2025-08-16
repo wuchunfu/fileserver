@@ -18,7 +18,7 @@ func FormatDateTime(datetime time.Time) string {
 // TimeToString 时间转字符串 参数 true 精确到时分秒 false 精确到日期
 func TimeToString(accurate bool) string {
 	var timeLayout string
-	if accurate == true {
+	if accurate {
 		// 时间模板-精确
 		timeLayout = "2006-01-02 15:04:05"
 	} else {

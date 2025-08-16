@@ -61,7 +61,8 @@ func Run() {
 	}
 	// 优雅地重启或停止
 	// 等待中断信号以优雅地关闭服务器（设置 5 秒的超时时间）
-	quit := make(chan os.Signal)
+	// 使用缓冲通道
+	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)
 	// quit 信道是同步信道，若没有信号进来，处于阻塞状态
 	// 反之，则执行后续代码

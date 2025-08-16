@@ -1,6 +1,7 @@
 package logx
 
 import (
+	"fmt"
 	"net"
 	"net/http"
 	"net/http/httputil"
@@ -181,11 +182,11 @@ func NewLogger(mod ...ModOptions) *zap.Logger {
 		l.Opts.LogFileDir += sp + "logs" + sp
 	}
 
-	if l.Opts.Config.OutputPaths == nil || len(l.Opts.Config.OutputPaths) == 0 {
+	if len(l.Opts.Config.OutputPaths) == 0 {
 		l.ZapConfig.OutputPaths = []string{"stdout"}
 	}
 
-	if l.Opts.Config.ErrorOutputPaths == nil || len(l.Opts.Config.ErrorOutputPaths) == 0 {
+	if len(l.Opts.Config.ErrorOutputPaths) == 0 {
 		l.ZapConfig.OutputPaths = []string{"stderr"}
 	}
 
@@ -206,7 +207,11 @@ func (l *Logger) Init() {
 	if err != nil {
 		panic(err)
 	}
-	defer l.Logger.Sync()
+	defer func() {
+		if err := l.Logger.Sync(); err != nil {
+			fmt.Printf("Failed to sync logger: %v\n", err)
+		}
+	}()
 }
 
 func (l *Logger) setSyncs() {
@@ -232,11 +237,10 @@ func (l *Logger) setSyncs() {
 	warnWS = f(l.Opts.WarnFileName)
 	infoWS = f(l.Opts.InfoFileName)
 	debugWS = f(l.Opts.DebugFileName)
-	return
 }
 
 func (l *Logger) generateEncoderConfig() zapcore.EncoderConfig {
-	customTimeEncoder := timeEncoder
+	var customTimeEncoder zapcore.TimeEncoder
 	if l.Opts.Development {
 		l.ZapConfig = zap.NewDevelopmentConfig()
 		// 自定义时间输出格式
@@ -331,7 +335,7 @@ func GetLogger() *zap.Logger {
 func InitLog(setting *configx.Log) {
 	// 设置日志级别
 	level := strings.ToLower(strings.TrimSpace(setting.Level))
-	logLevel := zap.DebugLevel
+	var logLevel zapcore.Level
 	switch level {
 	case "error":
 		logLevel = zap.ErrorLevel

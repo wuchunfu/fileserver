@@ -38,7 +38,7 @@ func List(ctx *gin.Context) {
 		filex.MkdirAll(storageAbsPath)
 	}
 
-	fileList := &[]FileList{}
+	var fileList *[]FileList
 	parentPath := ctx.Query("parentPath")
 	logx.GetLogger().Sugar().Infof("parentPath: %s", parentPath)
 	if parentPath == "" {
@@ -121,7 +121,7 @@ func ListFolder(storageAbsPath string) *[]FileList {
 
 	fileList := make([]FileList, 0)
 	// 遍历目录，读出文件名、大小
-	err := filepath.WalkDir(storageAbsPath, func(filePath string, info fs.DirEntry, err error) error {
+	err := filepath.WalkDir(storageAbsPath, func(filePath string, info fs.DirEntry, walkErr error) error {
 		fileInfo, err := info.Info()
 		if nil == fileInfo {
 			return err
@@ -129,7 +129,7 @@ func ListFolder(storageAbsPath string) *[]FileList {
 		if filePath == storageAbsPath {
 			return nil
 		}
-		list := &FileList{}
+		var list *FileList
 		if info.IsDir() {
 			fileName := info.Name()
 			dateTime := datetimex.FormatDateTime(fileInfo.ModTime())
